@@ -40,7 +40,7 @@ router.get("/api/chats/:id", async (req, res) => {
     const {id} = req.params;
 
     //Search chat
-    const chat = await Chat.findById(id);
+    const chat = await Chat.findById(id).populate("messages");
 
     //Result
     res.json(chat);

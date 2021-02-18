@@ -17,6 +17,7 @@ app.use(express.json());
 //Routes
 app.use(require("./routes/users"));
 app.use(require("./routes/chats"));
+app.use(require("./routes/messages"));
 
 //Static files
 app.use(express.static(path.join(__dirname, "public")));

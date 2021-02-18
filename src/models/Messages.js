@@ -6,7 +6,11 @@ const {Schema} = mongoose;
 const MessagesSchema = new Schema({
     from: {type: String, required: true},
     to: {type: String, required: true},
-    message: {type: String, required: true}
+    message: {type: String, required: true},
+    chat: {
+        type: Schema.Types.ObjectId,
+        ref: "chats"
+    }
 });
 
 //Export
