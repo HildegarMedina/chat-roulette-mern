@@ -4,6 +4,7 @@ const router = express();
 
 //Schema
 const Chat = require("../models/Chats");
+const Messages = require("../models/Messages");
 
 //Create chat
 router.post("/api/chats/", async (req, res) => {
@@ -60,11 +61,18 @@ router.delete("/api/chats/:id", async (req, res) => {
     await Chat.findByIdAndDelete(id)
     
     //Result
-    .then(chat => res.json({status: "Chat deleted"}))
+    .then(chat => {
+        if (chat != null) {
+            //Delete messages
+            chat.messages.map(async msg => {
+                await Messages.findByIdAndDelete(msg._id);
+            });
+            res.json({status: "Chat deleted"})
+        }else {
+            res.json({status: "Chat not found"})
+        }
+    })
     .catch(err => console.log(err));
-
-    //Delete messages
-    //Comming soon
 
 });
  
