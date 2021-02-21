@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const uri = "mongodb://localhost/chat-roulette";
 
 //Connect
-mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(db => console.log("Database is running"))
     .catch(err => console.log(err));
 

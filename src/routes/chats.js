@@ -3,34 +3,95 @@ const express = require("express");
 const router = express();
 
 //Schema
+const Users = require("../models/Users");
 const Chat = require("../models/Chats");
 const Messages = require("../models/Messages");
 
-//Create chat
-router.post("/api/chats/", async (req, res) => {
-   
-    //Get datas
-    const {user1, user2} = req.body;
+//Roulette
+setInterval(async ()=> {
 
-    //Search
-    const result = await Chat.find({$or: [{user1: user1, user2: user2}]});
+    //Find users active
+    const users = await Users.find({status: true})
     
-    //Chat find
-    if(result.length > 0) {
-        res.json({status: "Chat has already been created"});
-    }else {
-        
-        //Create chat
-        const chat = new Chat({user1, user2});
+    //Result
+    .then(async users => {
 
-        //save chat
-        await chat.save()
+        if (users.length > 1) {
+            
+            const total_users = users.length;
 
-        //Result
-        .then(chat => res.json({status: "Chat created"}))
-        .catch(err => console.log(err));
+            //Set users
+            let user1 = "";
+            let user2 = "";
 
-    }
+            //While
+            for (let i = 0; i <= users.length; i++) {
+
+                if (user1 == "") {
+                    user1 = users[i];
+                }else if(user2 == "") {
+                    user2 = users[i];
+                }else if(user1.id != "" && user2.id != "") {
+
+                    nick1 = user1.nick;
+                    nick2 = user2.nick;
+
+                    //Create chat
+                    const chat = new Chat({user1: nick1, user2: nick2});
+
+                    //save chat
+                    const newChat = await chat.save();
+
+                    if (newChat != false) {
+
+                        //Change state
+                        await Users.findByIdAndUpdate({_id: user1.id}, {$set: {status: false}}, {upsert: true});
+                        await Users.findByIdAndUpdate({_id: user2.id}, {$set: {status: false}}, {upsert: true});
+    
+                        console.log(`New roulette: ${nick1} : ${nick2}`);
+
+                        user1 = ""; user2 = "";
+
+                    }
+
+
+                }
+                
+            }
+        }
+    })
+    
+    //Error
+    .catch(err => console.log(err));
+}, 1500);
+
+//Wait chat
+router.post("/api/chats/wait/", async (req, res) => {
+
+    //Get params
+    const {id} = req.body;
+    
+    //Change state
+    await Users.findByIdAndUpdate({_id:id}, {$set: {status: true}}, {upsert: true})
+
+    //Result
+    .then(result => res.json({status: "Status in waiting"}))
+    .catch(err => console.log(err));
+
+});
+
+//Cancel find
+router.post("/api/chats/cancel/", async (req, res) => {
+
+    //Get params
+    const {id} = req.body;
+    
+    //Change state
+    await Users.findByIdAndUpdate({_id:id}, {$set: {status: false}}, {upsert: true})
+
+    //Result
+    .then(result => res.json({status: "Status canceled"}))
+    .catch(err => console.log(err));
 
 });
 
