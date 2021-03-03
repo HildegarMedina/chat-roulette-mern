@@ -41,7 +41,7 @@ router.post("/api/user/", async (req, res) => {
 
     //Save user
     await user.save()
-        .then(msg => res.json({status: "user added"}))
+        .then(usr => res.json(usr))
         .catch(err => res.json({status: err}));
 
 });
