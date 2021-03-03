@@ -1,9 +1,11 @@
 import axios from "axios";
 import { createContext, useState } from "react";
+import Cookies from 'js-cookie';
 
 //Interface
 interface UserContextsData {
     user: object,
+    setUser: (id:string, nick: string, age: string) => void,
     changeForm: (e:any) => void,
     login: (e:any) => void
 }
@@ -48,12 +50,15 @@ export function UserContextsProvider({children}) {
             .then(function (response) {
                 console.log(response.data);
                 if (response.data._id) {
-                    M.toast({html: '<b>Login success</b>', classes: "teal lighten-1"});
                     setUser({
                         id: response.data._id,
                         nick: form.nick,
                         age: form.age
-                    })
+                    });
+                    Cookies.set("id", response.data._id);
+                    Cookies.set("nick", response.data.nick);
+                    Cookies.set("age", response.data.age);
+                    M.toast({html: '<b>Login success</b>', classes: "teal lighten-1"});
                 }else {
                     M.toast({html: '<b>Login error</b>', classes: "red lighten-1"});
                 }
@@ -68,6 +73,7 @@ export function UserContextsProvider({children}) {
     return (
         <UserContexts.Provider value={{
             user,
+            setUser,
             changeForm,
             login
         }}>

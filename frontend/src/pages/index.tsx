@@ -1,22 +1,73 @@
+import axios from 'axios';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head'
-import App from '../components/App';
 import Container from '../components/Container';
-import { UserContextsProvider } from '../contexts/UserContexts';
+import { UserContexts } from '../contexts/UserContexts';
+import Cookies from 'js-cookie';
+import Login from '../components/Login';
+import { useContext } from 'react';
 
-export default function Home() {
+interface HomeProps {
+  login: boolean,
+  id: string,
+  nick: string,
+  age: string
+}
+
+export default function Home(props : HomeProps) {
+
+  //Verify login
+  const { login, id, nick, age } = props;
+  
+  //Get user
+  const { user, setUser } = useContext(UserContexts);
+
+  //If users is login
+  if (login) {
+    setUser(id, nick, age);
+  }
 
   return (
       <Container>
-        <UserContextsProvider>
+        
           <Head>
             <title>Chat Roulette App</title>
           </Head>
 
-          <App/>
-
-        </UserContextsProvider>
+          {user ? (
+              <h1>Logueado</h1>
+          ): (
+              <Login/>
+          )}
 
       </Container>
   )
   
+}
+
+export const getServerSideProps:GetServerSideProps = async (ctx) => {
+    
+  const { id, nick, age } = ctx.req.cookies;
+
+  var result = false;
+
+  //Get user in database
+  await axios.get("http://localhost:8081/api/user/"+id)
+  .then(res => {
+      result = (res.data._id) ? true : false; 
+  })
+  .catch(err => {
+      Cookies.set("id", ""); Cookies.set("nick", ""); Cookies.set("age", "");
+      result = false;
+  });
+
+
+  return {
+      props: {
+          login: result,
+          id: id,
+          nick: nick,
+          age: age
+      }
+  }
 }
