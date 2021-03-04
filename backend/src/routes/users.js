@@ -1,5 +1,6 @@
 //Modules
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express();
 
 //Schemas
@@ -22,11 +23,17 @@ router.get("/api/user/:id", async (req, res) => {
     //Get params
     const {id} = req.params;
 
-    //Search user
-    const user = await Users.findById(id);
-    
-    //Response
-    res.json(user);
+    if(mongoose.Types.ObjectId.isValid(id)) {
+        //Search user
+        const user = await Users.findById(id);
+        
+        //Response
+        res.json(user);
+
+    }else {
+        res.json({status: "Error id"})
+    }
+
 
 });
 
@@ -52,12 +59,19 @@ router.delete("/api/user/:id", async (req, res) => {
     //Get params
     const {id} = req.params;
 
-    //Delete user
-    await Users.findByIdAndDelete(id)
+    if(mongoose.Types.ObjectId.isValid(id)) {
 
-    //Response
-    .then(data => res.json({status: "User deleted"}))
-    .catch(err => console.log(err));
+        //Delete user
+        await Users.findByIdAndDelete(id)
+    
+        //Response
+        .then(data => res.json({status: "User deleted"}))
+        .catch(err => console.log(err));
+
+    }else {
+        res.json({status: "Error id"})
+    }
+    
 
 });
 
