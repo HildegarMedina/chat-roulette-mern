@@ -6,6 +6,7 @@ import { UserContexts } from '../contexts/UserContexts';
 import Cookies from 'js-cookie';
 import Login from '../components/Login';
 import { useContext, useEffect } from 'react';
+import Chat from '../components/Chat';
 
 interface HomeProps {
   login: boolean,
@@ -41,10 +42,12 @@ export default function Home(props : HomeProps) {
         
           <Head>
             <title>Chat Roulette App</title>
+            <link rel="preconnect" href="https://fonts.gstatic.com"/>
+            <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet"/> 
           </Head>
 
           {user.id ? (
-              <h1>Logueado</h1>
+              <Chat/>
           ): (
               <Login/>
           )}
@@ -54,21 +57,26 @@ export default function Home(props : HomeProps) {
   
 }
 
+//Get props from server
 export const getServerSideProps:GetServerSideProps = async (ctx) => {
     
-  const { id, nick, age } = ctx.req.cookies;
+  var { id, nick, age } = ctx.req.cookies;
 
   var result = false;
 
-  //Get user in database
-  await axios.get("http://localhost:8081/api/user/"+id)
-  .then(res => {
-      result = (res.data._id) ? true : false; 
-  })
-  .catch(err => {
-      Cookies.set("id", ""); Cookies.set("nick", ""); Cookies.set("age", "");
-      result = false;
-  });
+  if (id) {
+    //Get user in database
+    await axios.get("http://localhost:8081/api/user/"+id)
+    .then(res => {
+        result = (res.data._id) ? true : false; 
+    })
+    .catch(err => {
+        Cookies.set("id", ""); Cookies.set("nick", ""); Cookies.set("age", "");
+        result = false;
+    });
+  }else {
+    id = null; nick = null; age = null
+  }
 
 
   return {
