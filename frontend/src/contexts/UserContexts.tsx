@@ -4,10 +4,15 @@ import Cookies from 'js-cookie';
 
 //Interface
 interface UserContextsData {
-    user: object,
-    setUser: (id:string, nick: string, age: string) => void,
+    user: {
+        id: string,
+        nick: string,
+        age: number
+    },
+    setUser: (object) => void,
     changeForm: (e:any) => void,
-    login: (e:any) => void
+    login: (e:any) => void,
+    logout: () => void
 }
 
 //Export context
@@ -20,9 +25,14 @@ export function UserContextsProvider({children}) {
     const formData = {
         nick: null,
         age: null
-    }
+    };
+    const initialUser = {
+        id: null,
+        nick: null,
+        age: null
+    };
     const [form, setForm] = useState(formData)
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(initialUser)
 
     //Set nick
     const changeForm = (e:any) => {
@@ -70,12 +80,30 @@ export function UserContextsProvider({children}) {
 
     }
 
+    //Logout
+    const logout = () => {
+        axios.delete(`http://localhost:8081/api/user/${user.id}`)
+        .then(response => {
+            if (response.data.status == "User deleted") {
+                setUser(initialUser);
+                Cookies.set("id", null); Cookies.set("nick", null); Cookies.set("age", null);
+                M.toast({html: '<b>Logout success</b>', classes: "teal lighten-1"});
+            }else {
+                M.toast({html: '<b>Logout error</b>', classes: "red lighten-1"});
+            }
+        })
+        .catch(err => {
+            M.toast({html: '<b>Something is wrong on the server</b>', classes: "red lighten-1"});
+        })
+    }
+
     return (
         <UserContexts.Provider value={{
             user,
             setUser,
             changeForm,
-            login
+            login,
+            logout
         }}>
             {children}
         </UserContexts.Provider>

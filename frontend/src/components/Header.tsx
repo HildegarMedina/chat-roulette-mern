@@ -1,6 +1,13 @@
+import next from "next";
+import Link from 'next/link';
 import Head from "next/head";
+import { useContext } from "react";
+import { UserContexts } from "../contexts/UserContexts";
 
 const Header = () => {
+    
+    const { user, logout } = useContext(UserContexts);
+
     return (
         <>
             <Head>
@@ -14,8 +21,23 @@ const Header = () => {
                         <div className="nav-wrapper">
                             <a href="#!" className="brand-logo">Chat Roulette</a>
                             <ul className="right hide-on-med-and-down">
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">Register</a></li>
+                                {user.id ? (
+                                    <li>
+                                        <button 
+                                            type="button" 
+                                            className="btn waves-effect waves-light red lighten-1"
+                                            onClick={logout}
+                                        >
+                                        Exit
+                                        </button>
+                                    </li>
+                                ): (
+                                    <li>
+                                        <Link href="/">
+                                            <a href="/">Home</a>
+                                        </Link>
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </div>

@@ -5,7 +5,7 @@ import Container from '../components/Container';
 import { UserContexts } from '../contexts/UserContexts';
 import Cookies from 'js-cookie';
 import Login from '../components/Login';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 interface HomeProps {
   login: boolean,
@@ -18,14 +18,23 @@ export default function Home(props : HomeProps) {
 
   //Verify login
   const { login, id, nick, age } = props;
-  
+
   //Get user
   const { user, setUser } = useContext(UserContexts);
 
-  //If users is login
-  if (login) {
-    setUser(id, nick, age);
-  }
+  //Update login
+  useEffect(() => {  
+
+    //If users is login
+    if (login) {
+      setUser({
+        id: id,
+        nick: nick,
+        age: age
+      });
+    }
+
+  }, [])
 
   return (
       <Container>
@@ -34,7 +43,7 @@ export default function Home(props : HomeProps) {
             <title>Chat Roulette App</title>
           </Head>
 
-          {user ? (
+          {user.id ? (
               <h1>Logueado</h1>
           ): (
               <Login/>
