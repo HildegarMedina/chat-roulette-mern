@@ -1,3 +1,10 @@
+
+.containerProfile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .profileImgContainer {
     padding: 20px;
 }
@@ -6,7 +13,7 @@
     display: block;
     margin: 0 auto;
     padding: 30px;
-    max-width: 180px;
+    max-width: 160px;
     border-radius: 50%;
     border: 2px solid var(--gray-lighter);
     background-color: var(--bg-gray);
@@ -17,8 +24,8 @@
 }
 
 .userTitle {
-    padding: 0 20px;
-    font-size: 2rem;
+    padding: 0 15px;
+    font-size: 1.8rem;
     font-weight: bold;
     background-color: var(--blue);
     color: var(--white);
@@ -27,4 +34,63 @@
 
 .userTitle.other {
     background-color: var(--green);
+}
+
+.chatContent {
+    background-color: var(--bg-gray);
+    height: calc(100% - 60px);
+    border: 1px solid var(--gray-lighter);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.chatContent > div > div {
+    display: flex;
+    align-items: flex-start;
+    color: var(--gray-meddium);
+    margin-bottom: 20px;
+}
+
+.chatHe {
+    justify-content: flex-end;
+}
+
+.chatHe > div {
+    flex-direction: row-reverse;
+}
+
+.chatMe > div > div, .chatHe > div > div {
+    padding: 5px 15px;
+    color: #fff;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.chatMe > div > div {
+    background: var(--blue);
+}
+
+.chatHe > div > div {
+    background: var(--green);
+}
+
+.chatContent div img {
+    width: 60px;
+    padding: 5px;
+    border-radius: 50%;
+    border: 1px solid var(--gray-lighter);
+}
+
+.chatSendMsg {
+    display: flex;
+    align-items: center;
+}
+
+.chatSendMsg > div:first-child {
+    width: calc(100% - 60px);
+}
+
+.chatSendMsg > div:last-child {
+    width: 60px;    
 }

@@ -4,9 +4,9 @@ import Head from 'next/head'
 import Container from '../components/Container';
 import { UserContexts } from '../contexts/UserContexts';
 import Cookies from 'js-cookie';
-import Login from '../components/Login';
+import Login from '../components/login/Login';
 import { useContext, useEffect } from 'react';
-import Chat from '../components/Chat';
+import Chat from '../components/chat/Chat';
 
 interface HomeProps {
   login: boolean,
