@@ -1,7 +1,7 @@
 import Router from 'next/router';
 import NProgress from 'nprogress';
-import '../styles/globals.css'
 import 'nprogress/nprogress.css';
+import '../styles/globals.css'
 import { UserContextsProvider } from '../contexts/UserContexts';
 
 Router.events.on('routeChangeStart', () => NProgress.start()); 

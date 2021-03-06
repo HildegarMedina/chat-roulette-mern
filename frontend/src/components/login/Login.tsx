@@ -3,7 +3,7 @@ import { UserContexts } from "../../contexts/UserContexts";
 
 const Login = () => {
 
-    const { changeForm, login } = useContext(UserContexts);
+    const { form, changeForm, login } = useContext(UserContexts);
 
     return(
         <div className="container">
@@ -15,11 +15,11 @@ const Login = () => {
                     <div className="card-content">
                         <form action="" method="POST" onSubmit={login}>
                             <div className="input-field">
-                                <input id="nick" type="text" name="nick" className="validate" onChange={changeForm}/>
+                                <input id="nick" type="text" name="nick" className="validate" onChange={changeForm} value={form.nick}/>
                                 <label htmlFor="nick">Nick</label>
                             </div>
                             <div className="input-field">
-                                <input id="age" type="number" name="age" min="12" max="99" className="validate" onChange={changeForm}/>
+                                <input id="age" type="number" name="age" min="12" max="99" className="validate" onChange={changeForm} value={form.age}/>
                                 <label htmlFor="age">Age</label>
                             </div>
                             <button type="submit" className="btn waves-effect waves-light deep-purple lighten-1" name="action">Login

@@ -94,3 +94,24 @@
 .chatSendMsg > div:last-child {
     width: 60px;    
 }
+
+.imgChat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+div.imgChat > img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 0;
+    border: 0;
+}
+
+.imgChat h6 {
+    font-size: 1.4rem;
+    color: var(--blue);
+    font-weight: bold;
+}
