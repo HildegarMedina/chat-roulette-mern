@@ -115,3 +115,28 @@ div.imgChat > img {
     color: var(--blue);
     font-weight: bold;
 }
+
+.waitingButton {
+    transition: all ease 300ms;
+}
+
+.waitingButton:hover {
+    background-color:var(--red) !important;
+}
+.waitingButton > b {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.waitingButton > b small {
+    margin: 0 5px;
+}
+
+.waitingButton > b > span:nth-child(2), .waitingButton:hover > b > span:nth-child(1) {
+    display: none;
+}
+
+.waitingButton:hover > b > span:nth-child(2) {
+    display: block;
+}

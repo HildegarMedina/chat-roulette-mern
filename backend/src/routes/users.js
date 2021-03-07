@@ -37,6 +37,20 @@ router.get("/api/user/:id", async (req, res) => {
 
 });
 
+//View user by nick
+router.get("/api/user/nick/:nick", async (req, res) => {
+
+    //Get params
+    const {nick} = req.params;
+
+    //Search user
+    const user = await Users.findOne({nick: nick});
+    
+    //Response
+    res.json(user);
+
+});
+
 //Insert user
 router.post("/api/user/", async (req, res) => {
 

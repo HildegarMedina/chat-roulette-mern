@@ -65,6 +65,22 @@ setInterval(async ()=> {
     .catch(err => console.log(err));
 }, 1500);
 
+//Verify status chat
+router.get("/api/chats/verify/:nick", async (req, res) => {
+
+    //Get params
+    const {nick} = req.params;
+
+    //Search chat
+    await Chat.findOne({ $or: [ {user1: nick}, {user2: nick} ]})
+
+    //Result
+    .then(result => res.json(result))
+    .catch(err => console.log(err));
+    
+
+});
+
 //Wait chat
 router.post("/api/chats/wait/", async (req, res) => {
 

@@ -6,11 +6,7 @@ import style from '../../styles/components/Chat.module.css';
 const CardProfile = () => {
 
     const { user } = useContext(UserContexts);
-    const { chat, setChat } = useContext(ChatContexts);
- 
-    useEffect(()=> {
-        
-    }, [])
+    const { chat, requestChat, startRequestChat, cancelRequestChat, currentTime } = useContext(ChatContexts);
 
     return (
         <>
@@ -38,14 +34,46 @@ const CardProfile = () => {
                     <div className={`${style.userTitle} ${style.other}`}>{chat.user.nick}</div>
                     <div className="card-content">
                     <p>
-                        <b>Age:</b> {chat.user.id}
+                        <b>Age:</b> {chat.user.age}
                     </p>
                     </div>
                 </div>
             )}
 
-            <div className="my-0">
-                {chat ? (
+            <div className="my-0 position-relative">
+                {requestChat == 0 && (
+                    <button 
+                        type="button" 
+                        className="btn btn-large waves-effect waves-light deep-purple lighten-1" 
+                        onClick={startRequestChat}
+                        style={{width: "100%"}}
+                    >
+                        <b>Start</b>
+                        <i className="material-icons right">play_arrow</i>
+                    </button>
+                )}
+                {requestChat == 1 && (
+                    <button 
+                        type="button" 
+                        className={`btn btn-large waves-effect waves-light deep-purple lighten-2 ${style.waitingButton}`} 
+                        onClick={cancelRequestChat}
+                        style={{width: "100%"}}
+                    >
+                        <b>
+                            <span>Waiting</span> 
+                            <span>Cancel</span>
+                            <small>
+                                <span style={{textTransform: 'lowercase'}}>( {currentTime}s )</span>
+                            </small>
+                        </b>
+                        
+                        <div className="progress progress-bar-button">
+                            <div className="indeterminate"></div>
+                        </div>
+        
+                    </button>
+                )}
+                {requestChat == 2 && (
                     <button 
                         type="button" 
                         className="btn btn-large waves-effect waves-light blue-grey darken-2" 
@@ -53,15 +81,6 @@ const CardProfile = () => {
                     >
                         <b>Restart</b>
                         <i className="material-icons right">rotate_left</i>
-                    </button>
-                ): (
-                    <button 
-                        type="button" 
-                        className="btn btn-large waves-effect waves-light deep-purple lighten-1" 
-                        style={{width: "100%"}}
-                    >
-                        <b>Start</b>
-                        <i className="material-icons right">play_arrow</i>
                     </button>
                 )}
             </div>
