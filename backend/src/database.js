@@ -1,8 +1,9 @@
 //Modules
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 //Vars
-const uri = "mongodb://localhost/chat-roulette";
+const uri = process.env.MONGO_URI;
 
 //Connect
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })

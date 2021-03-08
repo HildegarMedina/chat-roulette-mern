@@ -33,3 +33,4 @@ frontend/.env.production.local
 
 # vercel
 frontend/.vercel
+*.env
