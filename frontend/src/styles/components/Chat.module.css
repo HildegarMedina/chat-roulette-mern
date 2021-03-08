@@ -140,3 +140,41 @@ div.imgChat > img {
 .waitingButton:hover > b > span:nth-child(2) {
     display: block;
 }
+
+@media(max-width: 768px) {
+    .containerChat {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: space-between;
+    }
+    .profileImgContainer {
+        padding: 10px;
+        border-right: 1px solid var(--gray-lighter);
+        margin-right: 10px;
+    } 
+    .profileImg {
+        padding: 12px;
+        width: 60px;
+        height: 60px;
+        max-width: 100px;
+    }
+    .cardMessages {
+        display: flex;
+        align-items: center;
+    }
+    .userTitle {
+        font-size: 1.2rem;
+    }
+    .chatContent div img {
+        width: 45px;
+    }
+    .chatContent div.imgChat img {
+        width: 100% !important;
+    }
+    .card .card-content {
+        padding: 10px;
+    }
+    .groupButton {
+        margin: 15px 0;
+    }
+}

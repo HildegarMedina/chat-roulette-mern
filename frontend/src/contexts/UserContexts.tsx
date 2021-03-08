@@ -59,7 +59,7 @@ export function UserContextsProvider({children}) {
             M.toast({html: '<b>Something is wrong with your age </b>', classes: "red lighten-1"});
         }else {
             NProgress.start();
-            axios.post('http://localhost:8081/api/user', form)
+            axios.post('http://192.168.1.54:8081/api/user', form)
             .then(function (response) {
                 if (response.data._id) {
                     setUser({
@@ -88,7 +88,7 @@ export function UserContextsProvider({children}) {
     //Logout
     const logout = () => {
         NProgress.start();
-        axios.delete(`http://localhost:8081/api/user/${user.id}`)
+        axios.delete(`http://192.168.1.54:8081/api/user/${user.id}`)
         .then(response => {
             if (response.data.status == "User deleted") {
                 setUser(initialUser);

@@ -6,11 +6,11 @@ import style from '../../styles/components/Chat.module.css';
 const CardProfile = () => {
 
     const { user } = useContext(UserContexts);
-    const { chat, requestChat, startRequestChat, cancelRequestChat, currentTime, skipChat } = useContext(ChatContexts);
+    const { chat, requestChat, startRequestChat, cancelRequestChat, currentTime, skipChat, exitChat } = useContext(ChatContexts);
 
     return (
         <>
-            <div className="card mt-0 mb-2">
+            <div className={`card mt-2 mb-0 ${style.cardMessages}`}>
                 <div className={style.profileImgContainer}>
                     <figure className={style.profileImg}>
                         <img src="images/user.svg"/>
@@ -25,7 +25,7 @@ const CardProfile = () => {
             </div>
 
             {chat && (
-                <div className="card mt-2 mb-0">
+                <div className={`card mt-2 mb-0 ${style.cardMessages}`}>
                     <div className={style.profileImgContainer}>
                         <figure className={style.profileImg}>
                             <img src="images/user-2.svg"/>
@@ -40,7 +40,7 @@ const CardProfile = () => {
                 </div>
             )}
 
-            <div className="my-0 position-relative">
+            <div className={`my-0 position-relative ${style.groupButton}`}>
                 {requestChat == 0 && (
                     <button 
                         type="button" 
@@ -74,15 +74,26 @@ const CardProfile = () => {
                     </button>
                 )}
                 {requestChat == 2 && (
-                    <button 
-                        type="button" 
-                        className="btn btn-large waves-effect waves-light blue darken-2" 
-                        style={{width: "100%"}}
-                        onClick={skipChat}
-                    >
-                        <b>Skip</b>
-                        <i className="material-icons right">skip_next</i>
-                    </button>
+                    <div>
+                        <button
+                            type="button"
+                            className="btn btn-large waves-effect waves-light red lighten-1"
+                            style={{width: "50%"}}
+                            onClick={exitChat}
+                        >
+                            <i className="material-icons left">close</i>
+                            <b>Exit</b>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-large waves-effect waves-light blue darken-2"
+                            style={{width: "50%"}}
+                            onClick={skipChat}
+                        >
+                            <b>Skip</b>
+                            <i className="material-icons right">skip_next</i>
+                        </button>
+                    </div>
                 )}
             </div>
             

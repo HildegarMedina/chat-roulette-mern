@@ -20,15 +20,15 @@ const Header = () => {
                     <div className="container">
                         <div className="nav-wrapper">
                             <a href="#!" className="brand-logo">Chat Roulette</a>
-                            <ul className="right hide-on-med-and-down">
+                            <ul className="right">
                                 {user.id ? (
                                     <li>
                                         <button 
                                             type="button" 
-                                            className="btn waves-effect waves-light red lighten-1"
+                                            className="btn btn-small waves-effect waves-light red lighten-1"
                                             onClick={logout}
                                         >
-                                        Exit
+                                        Logout
                                         </button>
                                     </li>
                                 ): (

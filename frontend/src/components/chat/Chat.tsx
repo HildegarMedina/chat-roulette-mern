@@ -9,7 +9,7 @@ const Chat = () => {
          <ChatContextsProvider>
             <div className="container h-100">
                 
-                <div className="row py-3 h-100">
+                <div className={`row py-3 h-100 ${style.containerChat}`}>
                     <div className="col s12 m8 l9 h-100">
                         <ChatContent/>
                     </div>

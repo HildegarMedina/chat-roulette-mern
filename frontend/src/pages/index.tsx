@@ -66,7 +66,7 @@ export const getServerSideProps:GetServerSideProps = async (ctx) => {
 
   if (id) {
     //Get user in database
-    await axios.get("http://localhost:8081/api/user/"+id)
+    await axios.get("http://192.168.1.54:8081/api/user/"+id)
     .then(res => {
         result = (res.data._id) ? true : false; 
     })
