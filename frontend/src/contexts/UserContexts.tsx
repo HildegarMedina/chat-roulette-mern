@@ -61,7 +61,6 @@ export function UserContextsProvider({children}) {
             NProgress.start();
             axios.post('http://localhost:8081/api/user', form)
             .then(function (response) {
-                console.log(response.data);
                 if (response.data._id) {
                     setUser({
                         id: response.data._id,

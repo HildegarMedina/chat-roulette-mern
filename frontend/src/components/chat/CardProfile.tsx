@@ -6,7 +6,7 @@ import style from '../../styles/components/Chat.module.css';
 const CardProfile = () => {
 
     const { user } = useContext(UserContexts);
-    const { chat, requestChat, startRequestChat, cancelRequestChat, currentTime } = useContext(ChatContexts);
+    const { chat, requestChat, startRequestChat, cancelRequestChat, currentTime, skipChat } = useContext(ChatContexts);
 
     return (
         <>
@@ -76,11 +76,12 @@ const CardProfile = () => {
                 {requestChat == 2 && (
                     <button 
                         type="button" 
-                        className="btn btn-large waves-effect waves-light blue-grey darken-2" 
+                        className="btn btn-large waves-effect waves-light blue darken-2" 
                         style={{width: "100%"}}
+                        onClick={skipChat}
                     >
-                        <b>Restart</b>
-                        <i className="material-icons right">rotate_left</i>
+                        <b>Skip</b>
+                        <i className="material-icons right">skip_next</i>
                     </button>
                 )}
             </div>

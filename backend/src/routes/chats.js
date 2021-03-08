@@ -11,14 +11,12 @@ const Messages = require("../models/Messages");
 setInterval(async ()=> {
 
     //Find users active
-    const users = await Users.find({status: true})
+    await Users.find({status: true})
     
     //Result
     .then(async users => {
 
         if (users.length > 1) {
-            
-            const total_users = users.length;
 
             //Set users
             let user1 = "";
@@ -63,7 +61,7 @@ setInterval(async ()=> {
     
     //Error
     .catch(err => console.log(err));
-}, 1500);
+}, 4000);
 
 //Verify status chat
 router.get("/api/chats/verify/:nick", async (req, res) => {
@@ -138,12 +136,13 @@ router.delete("/api/chats/:id", async (req, res) => {
     await Chat.findByIdAndDelete(id)
     
     //Result
-    .then(chat => {
+    .then(async chat => {
         if (chat != null) {
             //Delete messages
             chat.messages.map(async msg => {
                 await Messages.findByIdAndDelete(msg._id);
             });
+
             res.json({status: "Chat deleted"})
         }else {
             res.json({status: "Chat not found"})

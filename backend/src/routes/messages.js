@@ -12,11 +12,20 @@ router.get("/api/messages/:id", async (req, res) => {
     //Get params
     const {id} = req.params;
 
-    //Search messages
-    const messages = await Messages.find({chat: id});
-
-    //Result
-    res.json(messages);
+    //Search chat
+    await Chats.find({_id: id})
+    .then(async response => {
+        if (response.length != 0) {
+            //Search messages
+            const messages = await Messages.find({chat: id});
+        
+            //Result
+            res.json(messages);
+        }else {
+            res.json({status: "Chat not found"});
+        }
+    })
+    .catch(err => console.log(err));
 
 });
 

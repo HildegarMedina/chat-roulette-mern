@@ -1,7 +1,7 @@
 import axios from "axios";
-import { userInfo } from "node:os";
 import nProgress from "nprogress";
 import { createContext, useContext, useEffect, useState } from "react";
+import { Events, scroller } from "react-scroll";
 import { UserContexts } from '../contexts/UserContexts';
 
 //Interface
@@ -20,7 +20,12 @@ interface ChatContextsData {
     requestChat: number,
     startRequestChat: () => void,
     cancelRequestChat: () => void,
-    currentTime: number
+    currentTime: number,
+    formChat: string,
+    setFormChat: (any) => void,
+    sendMessage: () => void,
+    scrollToWithContainer: () => void,
+    skipChat: () => void
 }
 
 //Chat context
@@ -32,14 +37,20 @@ export function ChatContextsProvider({children}) {
     //States
     const [chat, setChat] = useState(null);
     const [requestChat, setRequestChat] = useState(0); // 0 = inactive | 1 = waiting | 2 = active
-    const { user } = useContext(UserContexts);
+    const {user} = useContext(UserContexts);
     const [currentTime, setCurrentTime] = useState(1);
+    const [currentTimeChat, setCurrentTimeChat] = useState(0);
+    const [formChat, setFormChat] = useState("");
+    const [lastMessage, setLastMessage] = useState({
+        last: ""
+    });
     var time  = null;
+    var timeChat = null;
 
+    //Verify chat roulette
     useEffect(()=> {
         if (requestChat == 1) {
             time = setTimeout(async ()=> {
-                setCurrentTime(currentTime + 1);
                 await axios.get(`http://localhost:8081/api/chats/verify/${user.nick}`)
                 .then(async response => {
                     var data = response.data;
@@ -66,16 +77,76 @@ export function ChatContextsProvider({children}) {
                             M.toast({html: `<b>New chat with ${user.data.nick}</b>`, classes: "teal lighten-1"});
                         })
                     }
+                    setCurrentTime(currentTime + 1);
                 })
                 .catch(err => {
                     console.log(err);
                 })
 
             }, 1000);
-        }else {
-            setCurrentTime(1);
         }
     }, [requestChat, currentTime])
+
+    //Verify new messages
+    useEffect(()=> {
+
+        if (requestChat == 2) {
+
+            timeChat = setTimeout(async ()=> {
+     
+                await axios.get(`http://localhost:8081/api/messages/${chat.id}`)
+                .then(async response => {
+                    if (response.data.status == "Chat not found") {
+                        await axios.post("http://localhost:8081/api/chats/wait/", {id: user.id})
+                        .then(response => {
+                            if (response.data.status == "Status in waiting") {
+                                setRequestChat(1);
+                                setChat(null);
+                            }
+                        })
+                    }else {
+                        var count = response.data.length;
+                        if(count > 0) {
+                            var fromChat = response.data[count - 1].from;
+                            var lastMsg = fromChat + ":" + response.data[count - 1].message;
+                            if (lastMsg != lastMessage.last && fromChat != user.nick && lastMessage.last != "") {
+                                setLastMessage({
+                                    last: lastMsg
+                                });
+                                setChat({
+                                    ...chat,
+                                    messages: response.data
+                                });
+                                scrollToWithContainer();
+                                new Audio("/notification.mp3").play();
+                                if (Notification.permission === "granted") {
+                                    new Notification("Chat roulette - New message", {
+                                        body: `New message of ${chat.user.nick}`
+                                    });
+                                }
+                                M.toast({html: `<b>New message</b>`, classes: "teal lighten-1"});
+                            }else {
+                                setLastMessage({
+                                    last: lastMsg
+                                });
+                                setChat({
+                                    ...chat,
+                                    messages: response.data
+                                });
+                            }
+                        }
+                    }
+                })
+                .catch(err => console.log(err));
+
+                setCurrentTimeChat(currentTimeChat + 1);
+
+            }, 4000)
+
+        }
+        
+    }, [currentTimeChat, requestChat])
+
 
     //Start request chat
     const startRequestChat = async () => {
@@ -84,6 +155,29 @@ export function ChatContextsProvider({children}) {
         .then(response => {
             if (response.data.status == "Status in waiting") {
                 setRequestChat(1);
+            }
+            nProgress.done();
+        })
+        .catch(err => {
+            nProgress.done();
+            M.toast({html: '<b>Something is wrong on the server</b>', classes: "red lighten-1"});
+        })
+    }
+
+    //Skip chat
+    const skipChat = async () => {
+        nProgress.start();
+        await axios.delete(`http://localhost:8081/api/chats/${chat.id}`)
+        .then(async response => {
+            if (response.data.status == "Chat deleted") {
+                await axios.post("http://localhost:8081/api/chats/wait/", {id: user.id})
+                .then(response => {
+                    if (response.data.status == "Status in waiting") {
+                        setRequestChat(1);
+                        setChat(null);
+                    }
+                    nProgress.done();
+                })
             }
             nProgress.done();
         })
@@ -110,6 +204,60 @@ export function ChatContextsProvider({children}) {
         })
     }
 
+    //Send message
+    const sendMessage = async () => {
+        nProgress.start();
+        if (formChat == "") {
+            M.toast({html: '<b>You must enter your message</b>', classes: "red lighten-1"});
+            nProgress.done();
+        }else {
+            const message = {
+                from: user.nick,
+                to: chat.user.nick,
+                message: formChat,
+                chat: chat.id
+            }
+            await axios.post("http://localhost:8081/api/messages/", message)
+            .then(response => {
+                if (response.data.status == "Message send") {
+                    setFormChat("");
+                }
+                nProgress.done();
+            })
+            .catch(err => {
+                nProgress.done();
+                M.toast({html: '<b>Something is wrong on the server</b>', classes: "red lighten-1"});
+            })
+        }
+    }
+
+    //Scroll down
+    const scrollToWithContainer = () => {
+
+        let goToContainer = new Promise((resolve, reject) => {
+    
+            Events.scrollEvent.register('end', () => {
+                resolve("");
+                Events.scrollEvent.remove('end');
+            });
+    
+            scroller.scrollTo('scroll-container', {
+                duration: 800,
+                delay: 0,
+                smooth: 'easeInOutQuart'
+            });
+    
+        });
+    
+        goToContainer.then(() =>
+            scroller.scrollTo('scroll-container-second-element', {
+            duration: 800,
+            delay: 0,
+            smooth: 'easeInOutQuart',
+            containerId: 'scroll-container'
+        }));
+    }
+
     return (
         <ChatContexts.Provider value={{
             chat,
@@ -117,7 +265,12 @@ export function ChatContextsProvider({children}) {
             requestChat,
             startRequestChat,
             cancelRequestChat,
-            currentTime
+            currentTime,
+            formChat,
+            setFormChat,
+            sendMessage,
+            scrollToWithContainer,
+            skipChat
         }}>
             {children}
         </ChatContexts.Provider>
